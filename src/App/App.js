@@ -1,13 +1,16 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import './App.scss';
-import '../styles/index.scss';
+
+import Auth from '../components/Auth/Auth';
+import Home from '../components/Home/Home';
 
 class App extends React.Component {
   render() {
     return (
     <div className="App">
-        <button className='btn btn-danger'>Fish Store</button>
+      <Auth />
+      <Home />
     </div>
     );
   }
