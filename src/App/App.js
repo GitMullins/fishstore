@@ -1,13 +1,13 @@
 import React from 'react';
-
 import firebase from 'firebase/app';
-
-import './App.scss';
 
 import Auth from '../components/Auth/Auth';
 import Home from '../components/Home/Home';
+import MyNavbar from '../components/MyNavbar/MyNavbar';
 
 import fbConnection from '../helpers/data/connection';
+
+import './App.scss';
 
 fbConnection();
 
@@ -31,14 +31,16 @@ class App extends React.Component {
   }
 
   render() {
+    const { authed } = this.state;
     const loadComponent = () => {
-      if (this.state.authed) {
+      if (authed) {
         return <Home />;
       }
       return <Auth />;
     };
     return (
     <div className="App">
+      <MyNavbar authed={authed} />
       {loadComponent()}
     </div>
     );
