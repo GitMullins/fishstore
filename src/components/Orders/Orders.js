@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import OrderShapes from '../../helpers/propz/orderShapes';
 import OrderRow from '../OrderRow/OrderRow';
 
+import './Orders.scss';
+
 class Orders extends React.Component {
   static propTypes = {
     orders: PropTypes.arrayOf(OrderShapes.orderShape),

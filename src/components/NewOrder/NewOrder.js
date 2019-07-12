@@ -1,11 +1,22 @@
 import React from 'react';
 
+import PropTypes from 'prop-types';
+
+import fishShapes from '../../helpers/propz/fishShapes';
 import format from '../../helpers/format';
 
 import './NewOrder.scss';
 
 class NewOrder extends React.Component {
-  state = {
+  static propTypes = {
+    fishes: PropTypes.arrayOf(fishShapes.fishShape),
+    fishOrder: PropTypes.object.isRequired,
+    orderEditing: PropTypes.object.isRequired,
+    removeFromOrder: PropTypes.func.isRequired,
+    saveNewOrder: PropTypes.func.isRequired,
+  }
+
+  state={
     orderName: '',
   }
 
@@ -18,7 +29,6 @@ class NewOrder extends React.Component {
   nameChange = (e) => {
     e.preventDefault();
     this.setState({ orderName: e.target.value });
-    console.error(e.target.value);
   }
 
   renderOrder = (key) => {
@@ -41,11 +51,11 @@ class NewOrder extends React.Component {
           {format.formatPrice(fish.price * count)}
         </div>
         <div className="col-2">
-          <button className="btn btn-outline-dark" onClick={xClickFunction}>x</button>
+          <button className="btn delete btn-outline-dark" onClick={xClickFunction}>X</button>
         </div>
       </li>
     );
-  }
+  };
 
   saveOrder = (e) => {
     e.preventDefault();
@@ -64,14 +74,13 @@ class NewOrder extends React.Component {
       const count = this.props.fishOrder[key];
       return prevTotal + count * fish.price;
     }, 0);
-
     return (
       <div className="NewOrder">
         <h1>{Object.keys(orderEditing).length > 1 ? 'Edit Order' : 'New Order'}</h1>
         {Object.keys(orderEditing).length > 1 ? (<h2>Order id: {orderEditing.id}</h2>) : ''}
         <form className='col-6 offset-3'>
           <div className="form-group">
-            <label htmlFor="order-name">Order Name:</label>
+            <label htmlFor="order-name"><h4>Order Name:</h4></label>
             <input
               type="text"
               className="form-control"
@@ -89,7 +98,7 @@ class NewOrder extends React.Component {
         <div className="text-center">
           {
             orderExists ? (
-              <button className="btn btn-outline-dark" onClick={this.saveOrder}> Save Order </button>
+              <button className="btn-outline-dark" onClick={this.saveOrder}> Save Order </button>
             ) : (
               <div>Add Inventory to your order</div>
             )

@@ -1,15 +1,15 @@
 import React from 'react';
-
 import firebase from 'firebase/app';
 import 'firebase/auth';
 
-import './Home.scss';
 import NewOrder from '../NewOrder/NewOrder';
-import Inventory from '../Inventory/Inventory';
 import Orders from '../Orders/Orders';
+import Inventory from '../Inventory/Inventory';
+
 import fishData from '../../helpers/data/fishData';
 import ordersData from '../../helpers/data/ordersData';
 
+import './Home.scss';
 
 class Home extends React.Component {
   state = {
@@ -22,13 +22,13 @@ class Home extends React.Component {
   getOrders = () => {
     ordersData.getMyOrders(firebase.auth().currentUser.uid)
       .then(orders => this.setState({ orders }))
-      .catch(err => console.error(err, 'cant get orders'));
+      .catch(err => console.error('cant get orders', err));
   }
 
   componentDidMount() {
     fishData.getFishes()
       .then(fishes => this.setState({ fishes }))
-      .catch(err => console.error(err, 'could not get fishes'));
+      .catch(err => console.error('could not get fishes', err));
 
     this.getOrders();
   }
@@ -36,7 +36,7 @@ class Home extends React.Component {
   deleteOrder = (orderId) => {
     ordersData.deleteOrder(orderId)
       .then(() => this.getOrders())
-      .catch(err => console.error('error with delete request', err));
+      .catch(err => console.error('did not delete order', err));
   }
 
   addFishToOrder = (fishId) => {
@@ -61,7 +61,7 @@ class Home extends React.Component {
         this.getOrders();
       })
       .catch(err => console.error('error in post order', err));
-  };
+  }
 
   updateExisting = (orderName) => {
     const updateOrder = { ...this.state.orderEditing };
@@ -75,8 +75,6 @@ class Home extends React.Component {
         this.getOrders();
       })
       .catch(err => console.error('unable to update', err));
-    console.error(updateOrder);
-    console.error('orderId', orderId);
   }
 
   saveNewOrder = (orderName) => {
@@ -85,17 +83,19 @@ class Home extends React.Component {
     } else {
       this.makeNew(orderName);
     }
-  };
+  }
 
   selectOrderToEdit = (orderId) => {
     const selectedOrder = this.state.orders.find(x => x.id === orderId);
     this.setState({ fishOrder: selectedOrder.fishes, orderEditing: selectedOrder });
-    console.error('selectedOrder inside Home', selectedOrder);
   }
 
   render() {
     const {
-      fishes, orders, fishOrder, orderEditing,
+      fishes,
+      orders,
+      fishOrder,
+      orderEditing,
     } = this.state;
     return (
       <div className="Home">
@@ -104,17 +104,33 @@ class Home extends React.Component {
             <Inventory fishes={fishes} addFishToOrder={this.addFishToOrder}/>
           </div>
           <div className="col">
+            <div className="menu">
+              <header className="top">
+                <h1>
+                  Catch
+                  <span className="ofThe">
+                    <span className="of">Of</span>
+                    <span className="the">The</span>
+                  </span>
+                  Day
+                </h1>
+                <h3 className="tagline">
+                  <span>Fresh Seafood Market</span>
+                </h3>
+              </header>
+            </div>
             <NewOrder
-            fishes={fishes}
-            fishOrder={fishOrder}
-            removeFromOrder={this.removeFromOrder}
-            saveNewOrder={this.saveNewOrder}
-            orderEditing={orderEditing}
-             />
-          </div><div className="col">
+              fishes={fishes}
+              fishOrder={fishOrder}
+              removeFromOrder={this.removeFromOrder}
+              saveNewOrder={this.saveNewOrder}
+              orderEditing={orderEditing}
+            />
+          </div>
+          <div className="col">
             <Orders orders={orders} deleteOrder={this.deleteOrder} selectOrderToEdit={this.selectOrderToEdit}/>
           </div>
-          </div>
+        </div>
       </div>
     );
   }
